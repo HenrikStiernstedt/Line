@@ -28,3 +28,6 @@ Källor och ideér:
 * Få igång en WPF-app och rita linjer vid musevents:
 http://stackoverflow.com/questions/16037753/wpf-drawing-on-canvas-with-mouse-events
 
+* Algoritm för att se om linjer korsar varandra:
+http://dotnetbyexample.blogspot.se/2013/09/utility-classes-to-check-if-lines-andor.html
+

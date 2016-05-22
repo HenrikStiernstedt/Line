@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 
-namespace Liner
+namespace Liner.Shapes
 {
     class Dot
     {
@@ -32,7 +32,6 @@ namespace Liner
             Canvas.SetLeft(rectangle,startPoint.X);
             Canvas.SetTop(rectangle,startPoint.Y);
             canvas.Children.Add(rectangle);
-
         }
     }
 }

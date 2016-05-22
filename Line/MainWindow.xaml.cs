@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Liner.Shapes;
+using Liner.source.model;
+using Liner.source.shapes;
 
 namespace Liner
 {
@@ -25,13 +28,12 @@ namespace Liner
             InitializeComponent();
         }
 
-        bool ActivePoint = false;
-        Point currentPoint = new Point();
-        Line currentLine = null;
+        Lines lines = new Lines();
+        Random rand = new Random();
 
         private void Canvas_MouseDown_1(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(ActivePoint)
+            if(lines.ActivePoint)
             { 
                 // Do nothing
             }
@@ -44,6 +46,7 @@ namespace Liner
 
         private void Canvas_MouseMove_1(object sender, System.Windows.Input.MouseEventArgs e)
         {
+          /*
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 if (ActivePoint)
@@ -67,49 +70,60 @@ namespace Liner
                     currentLine = line;
                 }
             }
-            
+            */
         }
 
         private void Canvas_MouseUp_1(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            Console.Out.WriteLine("UP " + (ActivePoint ? "t" : "f"));
+            // TODO: Remove Console.Out.WriteLine("UP " + (ActivePoint ? "t" : "f"));
             
-            if(ActivePoint)
+            if(lines.ActivePoint)
             {
                 // Finnish the line!
                 // Remove temporary line.
-                MyCanvas.Children.Remove(currentLine);
+                MyCanvas.Children.Remove(lines.CurrentLine);
 
                 // Add the final line.
                 Dot.paintDot(MyCanvas, e.GetPosition(this));
 
-                Line line = new Line();
+                UnintersectingLine line = new UnintersectingLine(lines.CurrentPoint, e.GetPosition(this), lines.AllUnintersectingLines);
+                if(line.HasErrors)
+                {
+                    // Hittade ingen giltig path.
+                }
+                else
+                {
+                    lines.AllUnintersectingLines.Add(line);
 
-                line.Stroke = SystemColors.WindowFrameBrush;
-                line.X1 = currentPoint.X;
-                line.Y1 = currentPoint.Y;
-                line.X2 = e.GetPosition(this).X;
-                line.Y2 = e.GetPosition(this).Y;
+                    line.Stroke = SystemColors.WindowFrameBrush;
+                    line.Stroke = new SolidColorBrush(Color.FromRgb((byte)rand.Next(0, 200), (byte)rand.Next(0, 200), (byte)rand.Next(0, 200)));
+                    /*
+                    Line line = new Line();
 
-                MyCanvas.Children.Add(line);
+                    line.Stroke = SystemColors.WindowFrameBrush;
+                    line.X1 = lines.CurrentPoint.X;
+                    line.Y1 = lines.CurrentPoint.Y;
+                    line.X2 = e.GetPosition(this).X;
+                    line.Y2 = e.GetPosition(this).Y;
+                    */
 
-                ActivePoint = false;
 
+                    MyCanvas.Children.Add(line);
+                }
+
+                lines.ActivePoint = false;
             }
             else
             {
 
                 //Start a new line.
-                currentPoint = e.GetPosition(this);
+                lines.CurrentPoint = e.GetPosition(this);
 
                 // Paint a point
-                Dot.paintDot(MyCanvas, currentPoint);
-                ActivePoint = true;
-
+                Dot.paintDot(MyCanvas, lines.CurrentPoint);
+                lines.ActivePoint = true;
             }
 
-          
-           
         }
 
     }
