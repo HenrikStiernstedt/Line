@@ -77,9 +77,9 @@ namespace Liner.source.shapes
 
             foreach (UnintersectingLine otherUnintersectingLine in existingLines)
             {
-               // foreach (LineF otherLine in otherUnintersectingLine.LineSegments)
-              //  {
-                Point? intersection = thisline.Intersection(otherUnintersectingLine.OriginalLine);
+                foreach (LineF otherLine in otherUnintersectingLine.LineSegments)
+                {
+                    Point? intersection = thisline.Intersection(otherLine);
                     if (intersection != null)
                     {
 
@@ -121,7 +121,7 @@ namespace Liner.source.shapes
                         // Keep looking.
                         continue;
                     }
-               // }
+                }
             
             }
 
