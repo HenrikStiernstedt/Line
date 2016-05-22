@@ -13,6 +13,9 @@ namespace Liner.source.shapes
         public Point From { get; set; }
         public Point To { get; set; }
         List<Point> points = new List<Point>();
+        /// <summary>
+        /// Max counter for recursion.
+        /// </summary>
         int counter = 0;
 
         public LineF OriginalLine { get; set; }
@@ -31,7 +34,7 @@ namespace Liner.source.shapes
 
             // Enkel orekursiv version.
             LineF thisline = new LineF(From, To);
-
+             
             Console.Out.WriteLine("Ny linje " + From + " till " + To);
             counter = 0;
             LineSegments = FindPath(From, To, lines);
