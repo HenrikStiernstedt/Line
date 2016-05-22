@@ -42,7 +42,6 @@ namespace Wp7nl.Utilities
       get { return new Point(X2, Y2); }
     }
 
-
     /// <summary>
     /// Calculates intersection - if any - of two lines
     /// </summary>
@@ -112,6 +111,37 @@ namespace Wp7nl.Utilities
         num = a2 * c1 - a1 * c2;
         var y = (num < 0 ? num - offset : num + offset) / denom;
         return new Point(x, y);
+    }
+
+    public double D {
+        get { return (Y2-Y1) /(X2-X1); }
+    }
+
+    /// <summary>
+    /// Added by me.
+    /// </summary>
+    /// <param name="p"></param>
+    /// <param name="distance"></param>
+    /// <returns></returns>
+    public Point ExtendLine2(Point p, double distance)
+    {
+        double y;
+
+        double c = D;
+
+        y = Math.Sqrt((D*D)+(distance*distance)*Math.Pow(X2-X1,2) / (1 + ((D*D)*Math.Pow(X2-X1,2))));
+        return new Point(p.X, p.Y+y);
+    }
+
+    public Point ExtendLine(Point p, double distance)
+    {
+        Vector v = new Vector(X2, Y2);
+        Vector vExt = new Vector(X2 - X1, Y2 - Y1);
+        vExt.Normalize();
+        vExt = vExt*distance;
+        Vector vRet = Vector.Add(v, vExt);
+
+        return new Point(vRet.X, vRet.Y);
     }
   }
 
