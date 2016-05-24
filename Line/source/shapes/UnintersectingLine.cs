@@ -20,6 +20,8 @@ namespace Liner.source.shapes
 
         public LineF OriginalLine { get; set; }
         public List<LineF> LineSegments { get; set; }
+        public LineF FirstSegment { get { return LineSegments[0]; } }
+        public LineF LastSegment { get { return LineSegments[LineSegments.Count - 1]; } }
         public bool HasErrors {get; set;}
 
         public UnintersectingLine(Point point1, Point point2, List<UnintersectingLine> lines)
@@ -32,7 +34,6 @@ namespace Liner.source.shapes
             points.Add(point1);
             //points.Add(new Point(point1.X + 30, point2.Y - 30)); // Test. Fungerar bra att rita ut linjer som en path.
 
-            // Enkel orekursiv version.
             LineF thisline = new LineF(From, To);
              
             Console.Out.WriteLine("Ny linje " + From + " till " + To);
@@ -73,7 +74,11 @@ namespace Liner.source.shapes
         public List<LineF> FindPath(Point from, Point to, List<UnintersectingLine> existingLines)
         {
             counter++;
-            if (counter > 20) return null;
+            if (counter > 20)
+            {
+                Console.Out.WriteLine("Out of moves!");
+                return null;
+            }
  
             LineF thisline = new LineF(from, to);
             List<LineF> res = new List<LineF>();
@@ -86,9 +91,10 @@ namespace Liner.source.shapes
                     if (intersection != null)
                     {
 
-                        float dFrom = (float)Math.Sqrt(Math.Pow(intersection.Value.X - otherUnintersectingLine.From.X, 2) + Math.Pow(intersection.Value.Y - otherUnintersectingLine.From.Y, 2));
-                        float dTo = (float)Math.Sqrt(Math.Pow(intersection.Value.X - otherUnintersectingLine.To.X, 2) + Math.Pow(intersection.Value.Y - otherUnintersectingLine.To.Y, 2));
+                        float dFrom = (float)Math.Sqrt(Math.Pow(intersection.Value.X - otherLine.From.X, 2) + Math.Pow(intersection.Value.Y - otherLine.From.Y, 2));
+                        float dTo = (float)Math.Sqrt(Math.Pow(intersection.Value.X - otherLine.To.X, 2) + Math.Pow(intersection.Value.Y - otherLine.To.Y, 2));
 
+                        /*
                         // Specialare! Om vi är close enough, anse at det var ok.
                         if( dFrom < 1 || dTo < 1)
                         {
@@ -97,16 +103,25 @@ namespace Liner.source.shapes
                             //   return res;
                             continue;
                         }
+                         */
                         
+
+                        Point candidate1 = (dFrom < dTo ? otherUnintersectingLine.FirstSegment.ExtendFrom(10) : otherUnintersectingLine.LastSegment.ExtendTo(10));
+                        Point candidate2 = (dFrom >= dTo ? otherUnintersectingLine.FirstSegment.ExtendFrom(10) : otherUnintersectingLine.LastSegment.ExtendTo(10));
+
                         // Vi har en korsning. Lägg till ny punkt istället. Kortast väg vinner.
                         // Här verkar det bli avgörande att ibland testa ett andra alternativ. 
-                        Point p = (dFrom < dTo ? otherUnintersectingLine.From : otherUnintersectingLine.To);
+                        Point p = candidate1;
+                       /*
+                        if(TraversedPoints.Contains(candidate1))
+                        {
+                            p = candidate2;
+                        }
+                        */
+
                         
-                     //   p.X += 5;
-                     //   p.Y += 5;
-                        
-                        Console.Out.WriteLine("Från " + from.ToString() + " till " + p.ToString());
-                        Console.Out.WriteLine("Sen från " + p.ToString() + " till " + to.ToString());
+                        Console.Out.WriteLine("  Från " + from.ToString() + " till " + p.ToString());
+                        Console.Out.WriteLine("  Sen från " + p.ToString() + " till " + to.ToString());
                         res = FindPath(from, p, existingLines);
                         if(res != null)
                         {
@@ -115,7 +130,19 @@ namespace Liner.source.shapes
                             {
                                 res.AddRange(part2);
                             }
+                            else
+                            {
+                                // Om vi körde fast i förra spåret, testa att gå åt andra hållet. Starta om med 20 nya fräscha försök.
+                                counter = 0;
+                                Point p2 = (dFrom >= dTo ? otherUnintersectingLine.FirstSegment.ExtendFrom(10) : otherUnintersectingLine.LastSegment.ExtendTo(10));
+                                List<LineF> part2_2 = FindPath(p, to, existingLines);
+                                if(part2_2 != null)
+                                {
+                                    res.AddRange(part2_2);
+                                }
+                            }
                         }
+
                         return res;
 
                     }

@@ -117,23 +117,18 @@ namespace Wp7nl.Utilities
         get { return (Y2-Y1) /(X2-X1); }
     }
 
-    /// <summary>
-    /// Added by me.
-    /// </summary>
-    /// <param name="p"></param>
-    /// <param name="distance"></param>
-    /// <returns></returns>
-    public Point ExtendLine2(Point p, double distance)
+    public Point ExtendFrom(double distance)
     {
-        double y;
+        Vector v = new Vector(X1, Y1);
+        Vector vExt = new Vector(X1 - X2, Y1 - Y2);
+        vExt.Normalize();
+        vExt = vExt * distance;
+        Vector vRet = Vector.Add(v, vExt);
 
-        double c = D;
-
-        y = Math.Sqrt((D*D)+(distance*distance)*Math.Pow(X2-X1,2) / (1 + ((D*D)*Math.Pow(X2-X1,2))));
-        return new Point(p.X, p.Y+y);
+        return new Point(vRet.X, vRet.Y);
     }
 
-    public Point ExtendLine(Point p, double distance)
+    public Point ExtendTo(double distance)
     {
         Vector v = new Vector(X2, Y2);
         Vector vExt = new Vector(X2 - X1, Y2 - Y1);

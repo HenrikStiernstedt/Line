@@ -111,7 +111,8 @@ namespace Liner
                     MyCanvas.Children.Add(line);
 
                     // Test
-                    Point extendedPoint = line.OriginalLine.ExtendLine(line.OriginalLine.To, 10);
+                    Point extendedPoint = line.FirstSegment.ExtendFrom(10);
+                    Dot.paintDot(MyCanvas, line.LastSegment.ExtendTo(10));
                     Console.Out.WriteLine("Extended Point: " + extendedPoint);
                     Dot.paintDot(MyCanvas, extendedPoint);
                 }

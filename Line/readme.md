@@ -31,3 +31,11 @@ http://stackoverflow.com/questions/16037753/wpf-drawing-on-canvas-with-mouse-eve
 * Algoritm för att se om linjer korsar varandra:
 http://dotnetbyexample.blogspot.se/2013/09/utility-classes-to-check-if-lines-andor.html
 
+
+Arbetslogg:
+-----------
+2016-05-16 Måndag: Första dagen. fått en WPF-applikation som ritar ut linjer.
+2016-05-20 fredag: Ett första utkast som föutsätter att varje linje får korsas i ändpunkterna. Korsar dock även sammansatta lijner i skarvarna.
+2016-05-22 söndag: Andra utkast som försöker runda befintliga linjer med marginaler. Algoritmen har dock svårt at avgöra när den kört in i en återvändsgränd.
+2016-05-23 måndag: Sammanställning av läget. Test av att spara befintlig väg. Tittar dock inte alltid på rätt linje och misslyckas därmed ibland.
+2016-05-24 tisdag: Planen är att välja det andra alternativet runt ett hinder om det första misslyckas. 
